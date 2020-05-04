@@ -10,10 +10,10 @@ final String valueColumn = 'value';
 final String spendingTypeColumn = 'spendingType';
 final String dateColumn = 'date';
 
-class ContactHelper{
-  static final ContactHelper _instance = ContactHelper.internal();
-  factory ContactHelper() => _instance;
-  ContactHelper.internal();
+class TransactionHelper{
+  static final TransactionHelper _instance = TransactionHelper.internal();
+  factory TransactionHelper() => _instance;
+  TransactionHelper.internal();
 
   Database _db;
 
@@ -48,33 +48,33 @@ class ContactHelper{
   }
 
   void save(TransactionValue transaction) async {
-    Database dbContact = await db;
-    dbContact.insert(transactionTable, transaction.toMap());
+    Database dbTransaction = await db;
+    dbTransaction.insert(transactionTable, transaction.toMap());
   }
 
-  Future<TransactionValue> getContact(int id) async{
-    Database dbContact = await db;
-    List<Map> maps = await dbContact.query(transactionTable,
+  Future<List<TransactionValue>> getAllByType(int type) async{
+    Database dbTransaction = await db;
+    List<Map> maps = await dbTransaction.query(transactionTable,
         columns: [idColumn, typeColumn, valueColumn, spendingTypeColumn, dateColumn],
-        where: '$idColumn = ?',
-        whereArgs: [id]);
+        where: '$typeColumn = ?',
+        whereArgs: [type]);
 
-    if(maps.length > 0){
-      return TransactionValue.fromMap(maps.first);
-    }
-    else{
-      return null;
-    }
+    List<TransactionValue> transactions = List();
+
+    for( Map map in maps)
+      transactions.add(TransactionValue.fromMap(map));
+
+    return transactions;
   }
 
   Future<int> delete(int id) async{
-    Database dbContact = await db;
-    return await dbContact.delete(transactionTable,
+    Database dbTransaction = await db;
+    return await dbTransaction.delete(transactionTable,
         where: '$idColumn = ?',
         whereArgs: [id]);
   }
 
-  Future<int> updateContact(TransactionValue transaction) async{
+  Future<int> updateTransaction(TransactionValue transaction) async{
     Database dbContact = await db;
     return await dbContact.update(transactionTable,
         transaction.toMap(), where: "$idColumn = ?", whereArgs: [transaction.id]);

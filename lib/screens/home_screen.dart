@@ -1,14 +1,15 @@
-import 'package:controledespesas/tabs/earnings_tab.dart';
-import 'package:controledespesas/tabs/spendings_tab.dart';
+import 'package:controledespesas/enums/transaction_types.dart';
+import 'package:controledespesas/tabs/transaction_tab.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return PageView(
       children: <Widget>[
-        EarningTab(),
-        SpendingTab()
+        TransactionsTab(TransactionType.earning),
+        TransactionsTab(TransactionType.spending),
       ],
     );
   }
